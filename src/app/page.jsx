@@ -2,42 +2,15 @@ import React from "react";
 import { query } from "../dbConfig/dbConfig";
 import FeaturedShows from "@/Components/FeaturedShows"
 import CategoryCard from "@/Components/CategoryCard"
-// Navbar Component
-const Navbar = () => {
-  return (
-    <nav className="bg-gray-900 text-white p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold">AniVerse</h1>
-      <div className="space-x-4">
-        <a href="#" className="hover:text-gray-400">Home</a>
-        <a href="#" className="hover:text-gray-400">Watch</a>
-        <a href="#" className="hover:text-gray-400">Watch History</a>
-        <a href="#" className="hover:text-gray-400">User Profile</a>
-        <a href="#" className="hover:text-gray-400">Settings</a>
-      </div>
-    </nav>
-  );
-};
+import Navbar from "@/Components/Navbar"
+import SearchBar from "@/Components/SearchBox"
 
-// Search Bar Component
-const SearchBar = () => {
-  return (
-    <div className="p-4">
-      <input
-        type="text"
-        placeholder="Search for your favorite anime..."
-        className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none"
-      />
-    </div>
-  );
-};
 
 export async function getAllAnimes() {
   const result = await query("SELECT * FROM Animes ORDER BY ReleaseDate DESC");
   return result.rows;
 }
 
-
-// Category Card Component
 
 
 // Categories Section
