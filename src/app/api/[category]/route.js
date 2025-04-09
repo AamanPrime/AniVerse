@@ -1,13 +1,16 @@
 import { query } from "@/dbConfig/dbConfig";
 
-export async function GET(req, { params }) {
-  const { category } = params;
+export async function GET(req) {
+  const url = new URL(req.url);
+  const category = url.pathname.split("/").pop();
   
 
   try {
     const sql = `
-      SELECT * FROM Animes
-      WHERE Genres::jsonb @> $1
+    
+    SELECT * FROM Animes
+    WHERE Genres::jsonb @> $1
+    
     `;
 
     const genreFilter = JSON.stringify([{ name: category }]);

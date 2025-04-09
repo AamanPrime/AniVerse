@@ -39,7 +39,7 @@ export default function CategoryMovies() {
         <h1 className="text-2xl font-bold capitalize mb-6">
           {category} Animes
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {animes.map((anime) => (
             <MovieDescription key={anime.AnimeID} anime={anime} />
           ))}

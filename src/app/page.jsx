@@ -1,19 +1,10 @@
-import React from "react";
-import { query } from "../dbConfig/dbConfig";
-import FeaturedShows from "@/Components/FeaturedShows"
-import CategoryCard from "@/Components/CategoryCard"
-import Navbar from "@/Components/Navbar"
-import SearchBar from "@/Components/SearchBox"
+"use client";
+import React, { useEffect, useState } from "react";
+import FeaturedShows from "@/Components/FeaturedShows";
+import CategoryCard from "@/Components/CategoryCard";
+import Navbar from "@/Components/Navbar";
+import SearchBar from "@/Components/SearchBox";
 
-
-export async function getAllAnimes() {
-  const result = await query("SELECT * FROM Animes ORDER BY ReleaseDate DESC");
-  return result.rows;
-}
-
-
-
-// Categories Section
 const Categories = () => {
   const categories = [
     { title: "Animation", image: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", link: "/animation" },
@@ -35,12 +26,58 @@ const Categories = () => {
   );
 };
 
-// Main Component
 export default function Main() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsAuthenticated(false);
+        setUser(null);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/authstatus", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+          setUser(data.user);
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
   return (
     <div className="bg-black min-h-screen text-white">
-      <Navbar />
+      <Navbar status={isAuthenticated} />
       <SearchBar />
+      
+      <div className="p-4 text-sm text-gray-300">
+        {isAuthenticated ? (
+          <p>Welcome back, <span className="font-semibold text-white">{user?.username}</span>!</p>
+        ) : (
+          <p>You are not logged in.</p>
+        )}
+      </div>
+
       <FeaturedShows />
       <Categories />
     </div>
