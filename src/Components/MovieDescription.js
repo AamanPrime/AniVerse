@@ -1,4 +1,6 @@
 export default function MovieDescription({ anime }) {
+  if (!anime) return null;
+
   return (
     <div className="w-64 h-96 perspective">
       <div className="relative w-full h-full transition-transform duration-700 transform-style preserve-3d hover:rotate-y-180">

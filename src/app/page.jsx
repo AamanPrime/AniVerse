@@ -27,55 +27,18 @@ const Categories = () => {
 };
 
 export default function Main() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        setUser(null);
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/authstatus", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-
-        if (data.authenticated) {
-          setIsAuthenticated(true);
-          setUser(data.user);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
 
   return (
     <div className="bg-black min-h-screen text-white">
-      <Navbar status={isAuthenticated} />
+      <Navbar />
       <SearchBar />
       
       <div className="p-4 text-sm text-gray-300">
-        {isAuthenticated ? (
+        {/* {isAuthenticated ? (
           <p>Welcome back, <span className="font-semibold text-white">{user?.username}</span>!</p>
         ) : (
           <p>You are not logged in.</p>
-        )}
+        )} */}
       </div>
 
       <FeaturedShows />

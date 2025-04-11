@@ -50,7 +50,7 @@ export default function LoginPage() {
 
                 {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
-                <label className="text-sm font-medium mb-1" htmlFor="username">Username</label>
+                <label className="text-sm font-medium mb-1" htmlFor="username">Email</label>
                 <input
                     type="text"
                     className="mb-4 p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
