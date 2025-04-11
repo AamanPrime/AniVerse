@@ -7,12 +7,12 @@ import SearchBar from "@/Components/SearchBox";
 
 const Categories = () => {
   const categories = [
-    { title: "Animation", image: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", link: "/animation" },
-    { title: "Comedy", image: "https://image.tmdb.org/t/p/w500/yzXniZFkPjpfroSSQoG4aCCKT7B.jpg", link: "/comedy" },
-    { title: "Action & Adventure", image: "https://image.tmdb.org/t/p/w500/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg", link: "/action" },
-    { title: "Drama", image: "https://image.tmdb.org/t/p/w500/eobAuhCJA8oRp814V67WhezVXtQ.jpg", link: "/drama" },
-    { title: "Mystery", image: "https://image.tmdb.org/t/p/w500/mCdT4GCPLDvgc1WNZDM3HKboAqg.jpg", link: "/mystery" },
-    { title: "Kids", image: "https://image.tmdb.org/t/p/w500/fBidRE6eaO41CqApwkpXyj9v9hi.jpg", link: "/kids" },
+    { title: "Animation", image: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", link: "animes/animation" },
+    { title: "Comedy", image: "https://image.tmdb.org/t/p/w500/yzXniZFkPjpfroSSQoG4aCCKT7B.jpg", link: "animes/comedy" },
+    { title: "Action & Adventure", image: "https://image.tmdb.org/t/p/w500/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg", link: "animes/action" },
+    { title: "Drama", image: "https://image.tmdb.org/t/p/w500/eobAuhCJA8oRp814V67WhezVXtQ.jpg", link: "animes/drama" },
+    { title: "Mystery", image: "https://image.tmdb.org/t/p/w500/mCdT4GCPLDvgc1WNZDM3HKboAqg.jpg", link: "animes/mystery" },
+    { title: "Kids", image: "https://image.tmdb.org/t/p/w500/fBidRE6eaO41CqApwkpXyj9v9hi.jpg", link: "animes/kids" },
   ];
   return (
     <section className="p-4">

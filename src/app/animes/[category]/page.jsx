@@ -1,6 +1,6 @@
 import Navbar from "@/Components/Navbar";
 import SearchBar from "@/Components/SearchBox";
-import CategoryMovies from "../../Components/CategoryMovies";
+import CategoryMovies from "../../../Components/CategoryMovies";
 
 export default async function Main() {
   

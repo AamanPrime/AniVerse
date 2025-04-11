@@ -57,10 +57,12 @@ const AnimeReviews = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navbar />
       {anime ? (
+        
         <div className="max-w-5xl mx-auto p-6">
+          
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             <img
-              src={anime.coverImage}
+              src={anime.coverimage}
               alt={anime.title}
               className="w-64 h-96 object-cover rounded-lg shadow-lg"
             />
@@ -68,11 +70,11 @@ const AnimeReviews = () => {
               <h1 className="text-4xl font-bold mb-4 text-red-500">{anime.title}</h1>
               <p className="text-gray-300 mb-4">{anime.description}</p>
               <ul className="text-gray-400 space-y-2">
-                <li><strong>Release Date:</strong> {anime.releaseDate}</li>
-                <li><strong>Number of Episodes:</strong> {anime.noOfEpisodes}</li>
-                <li><strong>Number of Seasons:</strong> {anime.noOfSeasons}</li>
+                <li><strong>Release Date:</strong> {anime.releasedate}</li>
+                <li><strong>Number of Episodes:</strong> {anime.noofepisodes}</li>
+                <li><strong>Number of Seasons:</strong> {anime.noofseasons}</li>
                 <li><strong>Studio:</strong> {anime.studio}</li>
-                <li><strong>Average Rating:</strong> {anime.averageRating}/10</li>
+                <li><strong>Average Rating:</strong> {anime.averagerating}/10</li>
               </ul>
             </div>
           </div>
