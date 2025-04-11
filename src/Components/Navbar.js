@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // NEW: track auth check
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const signOut = () => {
@@ -44,7 +44,7 @@ const Navbar = () => {
         setIsAuthenticated(false);
         setUser(null);
       } finally {
-        setLoading(false); // ✅ Done checking
+        setLoading(false);
       }
     };
 
@@ -52,24 +52,33 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-gray-900 text-white p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold">AniVerse</h1>
-      <div className="space-x-4">
-        <a href="/" className="hover:text-gray-400">Home</a>
-        <a href="#" className="hover:text-gray-400">Watch History</a>
-        <a href="#" className="hover:text-gray-400">User</a>
+    <nav className="bg-gradient-to-r from-orange-600 to-gray-800 text-gray-200 p-4 shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <h1 className="text-2xl font-bold tracking-wide cursor-pointer hover:scale-105 transition-transform text-orange-300">
+          AniVerse
+        </h1>
+        <div className="space-x-6 text-lg">
+          <a href="/" className="hover:text-orange-400 transition-colors">Home</a>
+          <a href="#" className="hover:text-orange-400 transition-colors">Watch History</a>
+          <a href="#" className="hover:text-orange-400 transition-colors">User</a>
 
-        {/* 👇 Don't show auth links until auth check is complete */}
-        {!loading && (
-          isAuthenticated ? (
-            <a href="#" className="hover:text-gray-400" onClick={signOut}>SignOut</a>
-          ) : (
-            <>
-              <a href="/login" className="hover:text-gray-400">SignIn</a>
-              <a href="/signup" className="hover:text-gray-400">SignUp</a>
-            </>
-          )
-        )}
+          {!loading && (
+            isAuthenticated ? (
+              <a
+                href="#"
+                className="hover:text-orange-400 transition-colors"
+                onClick={signOut}
+              >
+                SignOut
+              </a>
+            ) : (
+              <>
+                <a href="/login" className="hover:text-orange-400 transition-colors">SignIn</a>
+                <a href="/signup" className="hover:text-orange-400 transition-colors">SignUp</a>
+              </>
+            )
+          )}
+        </div>
       </div>
     </nav>
   );

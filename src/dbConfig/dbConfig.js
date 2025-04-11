@@ -3,8 +3,8 @@ import {Pool} from "pg";
 const pool = new Pool({
   user: "postgres", // Change to your PostgreSQL username
   host: "localhost",
-  database: "aniverse8", // Change to your database name
-  password: "admin", // Change to your password
+  database: "AniverseDB", // Change to your database name
+  password: "1234", // Change to your password
   port: 5432, // Default PostgreSQL port
 });
 
