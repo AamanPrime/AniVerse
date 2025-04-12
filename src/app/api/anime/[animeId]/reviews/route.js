@@ -1,33 +1,19 @@
+import { isAuth } from "@/Components/isAuth";
 import { query } from "@/dbConfig/dbConfig";
 import { v4 as uuidv4 } from "uuid";
 
-export async function GET(req, context) {
-  const { params } = context;
-  const { animeId } = await params;
-
-  try {
-    const result = await query(
-      "SELECT * FROM Reviews WHERE animeId = $1 ORDER BY timestamp DESC",
-      [animeId]
-    );
-    return new Response(JSON.stringify(result.rows), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch reviews" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-}
-
 export async function POST(req, context) {
-  const { params } = context;
-  const { animeId } = await params;
-  const { reviewText, rating, userId } = await req.json();
 
-  if (!reviewText || rating < 0 || rating > 10 || !userId) {
+  
+
+  const { params } = context;
+  const { animeId } = params;
+
+  const { reviewText, rating, user } = await req.json();
+  const userId = user.userId;
+  console.log(userId);
+
+  if (!reviewText || rating < 0 || rating > 10 || !user) {
     return new Response(JSON.stringify({ error: "Invalid input. Rating must be between 0 and 10." }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -42,6 +28,8 @@ export async function POST(req, context) {
     rating,
     timestamp: new Date().toISOString(),
   };
+
+  console.log(newReview)
 
   try {
     await query(

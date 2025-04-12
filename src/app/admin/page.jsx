@@ -1,11 +1,13 @@
 "use client";
-import Navbar from "@/Components/Navbar";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import jwt_decode from "jwt-decode";
+import Navbar from "@/Components/Navbar";
 
 export default function Main() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // 👈 Added loading state
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const adminActions = [
@@ -17,38 +19,30 @@ export default function Main() {
   ];
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/signin");
-        return;
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwt_decode(token);
+      console.log("Decoded token:", decoded); // Debug: Check the role
+
+      if (decoded?.role?.toLowerCase() === "admin") {
+        setIsAdmin(true);
+      } else {
+        router.push("/");
       }
-
-      try {
-        const res = await fetch("/api/checkadmin", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-
-        if (data.admin) {
-          setIsAdmin(true);
-        } else {
-          router.push("/not-authorized");
-        }
-      } catch (err) {
-        console.error("Error checking admin:", err);
-        router.push("/signin");
-      } finally {
-        setIsLoading(false); // 👈 Done loading
-      }
-    };
-
-    checkAdmin();
+    } catch (err) {
+      console.error("Token decoding failed:", err);
+      router.push("/login");
+    } finally {
+      setIsLoading(false);
+    }
   }, [router]);
 
-  // Show loading while checking
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -56,6 +50,8 @@ export default function Main() {
       </div>
     );
   }
+
+  if (!isAdmin) return null; // Prevents UI flicker before redirect
 
   return (
     <div className="bg-black min-h-screen text-white">

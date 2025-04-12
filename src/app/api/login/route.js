@@ -27,8 +27,9 @@ export async function POST(req) {
         await query(updateQuery, [username]);
 
         // Generate JWT Token
-        const token = jwt.sign({ userId: user.userid, username: user.username }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user.userid, username: user.username, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: "1h",
+
         });
         console.log("Logined");
         return new Response(JSON.stringify({ message: "Login successful", token }), { status: 200 });

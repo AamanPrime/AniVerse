@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 
 export async function GET(request) {
   const authHeader = request.headers.get('authorization');
-  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return NextResponse.json({ admin: false, error: 'No token provided' }, { status: 401 });
   }
@@ -13,6 +12,7 @@ export async function GET(request) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Use lowercase key if your token uses `role`
     if (decoded.role === 'admin') {
       return NextResponse.json({ admin: true, user: decoded });
     } else {
@@ -20,6 +20,7 @@ export async function GET(request) {
     }
 
   } catch (err) {
+    console.error("Invalid token", err);
     return NextResponse.json({ admin: false, error: 'Invalid token' }, { status: 401 });
   }
 }

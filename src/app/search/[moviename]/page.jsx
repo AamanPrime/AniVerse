@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import MovieDescription from "@/Components/MovieDescription";
-
+import Navbar from "@/Components/Navbar"
+import SearchBar from "@/Components/SearchBox";
 const SearchedMovies = () => {
   const { moviename } = useParams(); // dynamic route param
   const [movies, setMovies] = useState([]);
@@ -43,7 +44,9 @@ const SearchedMovies = () => {
 
   return (
     
-    <div className="p-4 text-white">
+    <div className="text-white">
+      <Navbar/>
+      <SearchBar/>
       <h1 className="text-xl font-bold mb-4">Search Results for: <span className="text-red-500">{moviename}</span></h1>
 
       {loading ? (
@@ -53,7 +56,7 @@ const SearchedMovies = () => {
         
       ) : (
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 md:grid-cols-4 gap-4 p-4">
           {console.log(movies)}
           {movies.map((movie) => {
   console.log("Rendering movie:", movie);
