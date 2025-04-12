@@ -29,13 +29,21 @@ export default function AnimeStreamingPage() {
         {/* Video & Next Episode */}
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 bg-black aspect-video rounded-lg shadow-lg"></div>
-          <div className="w-full md:w-1/3 bg-gray-900 p-4 rounded-lg shadow-md">
-            <h3 className="text-red-500 text-lg font-semibold mb-2">Next Episode</h3>
+          {/* <h3 className="text-red-500 text-lg font-semibold mb-2 inline">Next Episode</h3> */}
+          <div className="w-full md:w-1/3 bg-gray-900 p-4 rounded-lg shadow-md h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
 
-            <button className="w-full bg-gray-800 p-3 rounded-md text-left hover:bg-red-600 transition">
+            
+            {[...Array(anime?.noofepisodes)].map((_, i) => (
+              <button key={i} className="w-full bg-gray-800 p-3 rounded-md text-left hover:bg-red-600 transition mb-2">
+                {/* <p className="text-sm text-gray-400">Episode {i + 1}</p> */}
+                <p className="text-white font-bold">Episode {i + 1}</p>
+              </button>
+            ))}
+
+            {/* <button className="w-full bg-gray-800 p-3 rounded-md text-left hover:bg-red-600 transition">
               <p className="text-sm text-gray-400">Episode 1</p>
               <p className="text-white font-bold">Episode Title</p>
-            </button>
+            </button> */}
           </div>
         </div>
 

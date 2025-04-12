@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 import Navbar from "@/Components/Navbar";
 
 export default function Main() {
@@ -27,7 +28,8 @@ export default function Main() {
     }
 
     try {
-      const decoded = jwt_decode(token);
+      const decoded = jwtDecode(token);
+
       console.log("Decoded token:", decoded); // Debug: Check the role
 
       if (decoded?.role?.toLowerCase() === "admin") {
