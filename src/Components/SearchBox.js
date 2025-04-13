@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,27 +14,30 @@ const SearchBar = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
   return (
-    <div className="p-4 flex items-center gap-2">
-      <input
-        type="text"
-        placeholder="Search for your favorite anime..."
-        className="flex-grow p-2 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      <button
-        onClick={handleSearch}
-        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
-      >
-        Search
-      </button>
+    <div className="w-full max-w-md px-4">
+      <div className="flex items-center bg-white/10 backdrop-blur-md text-white rounded-full shadow-lg px-4 py-2 focus-within:ring-2 focus-within:ring-orange-400 transition-all duration-200">
+        <Search className="text-orange-300 w-5 h-5 mr-2" />
+
+        <input
+          type="text"
+          placeholder="Search anime..."
+          className="flex-grow bg-transparent placeholder-orange-200 text-white focus:outline-none text-sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+
+        <button
+          onClick={handleSearch}
+          className="ml-2 px-3 py-1 text-sm font-semibold bg-orange-500 hover:bg-orange-600 rounded-full transition-transform transform hover:scale-105"
+        >
+          Go
+        </button>
+      </div>
     </div>
   );
 };

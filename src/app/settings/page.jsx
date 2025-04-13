@@ -25,16 +25,14 @@ export default function UserSettingsPage() {
       if (!token) throw new Error("No token");
 
       const decoded = jwtDecode(token);
-      console.log(decoded)
       if (!decoded || !decoded.username || !decoded.email) {
         throw new Error("Invalid token structure");
       }
 
-      // Fill state with decoded info
       const userInfo = {
         username: decoded.username,
         email: decoded.email,
-        bio: decoded.bio,
+        bio: decoded.bio || "",
         profilePic: decoded.profilepicture || "https://i.pravatar.cc/150?img=8",
       };
 
@@ -58,8 +56,6 @@ export default function UserSettingsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData.bio)
-    console.log(formData.profilePic)
 
     const res = await fetch("/api/updatesettings", {
       method: "POST",
@@ -75,12 +71,8 @@ export default function UserSettingsPage() {
 
     const data = await res.json();
     if (res.ok) {
-      // if (data.token) {
-      //   localStorage.setItem("token", data.token);
-      // }
       alert("Settings updated!");
       window.location.reload();
-
     } else {
       alert(data.error || "Failed to update.");
     }
@@ -88,59 +80,67 @@ export default function UserSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-lg animate-pulse">Loading settings...</p>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <p className="text-white text-lg animate-pulse">Loading your settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="bg-gray-900 rounded-2xl shadow-lg w-full max-w-5xl grid md:grid-cols-2 gap-8 p-6">
-        {/* Left: Profile Preview */}
-        <div className="flex flex-col items-center text-center">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center p-6">
+      <div className="w-full max-w-6xl bg-gray-950 rounded-3xl shadow-2xl grid md:grid-cols-2 gap-10 p-10">
+        
+        {/* Profile Preview */}
+        <div className="flex flex-col items-center text-center animate-fade-in">
           <img
             src={user.profilePic}
             alt="Profile"
-            className="w-32 h-32 rounded-full border-4 border-red-500 shadow-md mb-4 object-cover"
+            className="w-36 h-36 rounded-full border-4 border-red-500 shadow-lg object-cover mb-5 hover:scale-105 transition-transform"
           />
-          <h2 className="text-2xl font-bold text-red-400">{user.username}</h2>
+          <h2 className="text-3xl font-bold text-red-400">{user.username}</h2>
           <p className="text-gray-400 text-sm mt-1">{user.email}</p>
-          <p className="mt-4 text-gray-300 italic max-w-sm">{user.bio}</p>
+          <div className="mt-4 px-4">
+            <p className="text-gray-300 italic">{user.bio || "No bio added yet."}</p>
+          </div>
         </div>
 
-        {/* Right: Edit Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Settings Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 animate-fade-in delay-100"
+        >
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Update Bio</label>
+            <label className="block text-sm text-gray-400 mb-2">Update Bio</label>
             <textarea
               name="bio"
               rows={4}
               value={formData.bio}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 text-white resize-none"
-              placeholder="Write something about yourself..."
+              className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-500"
+              placeholder="Tell us something about yourself..."
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Profile Picture URL</label>
+            <label className="block text-sm text-gray-400 mb-2">Profile Picture URL</label>
             <input
               type="url"
               name="profilePic"
               value={formData.profilePic}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 text-white"
-              placeholder="https://your-image-url.com/profile.jpg"
+              className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 focus:ring-2 focus:ring-red-500"
+              placeholder="https://your-image-url.com/avatar.jpg"
             />
           </div>
 
-          <button
-            type="submit"
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-xl transition"
-          >
-            Save Changes
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform hover:scale-105"
+            >
+              Save Changes
+            </button>
+          </div>
         </form>
       </div>
     </div>

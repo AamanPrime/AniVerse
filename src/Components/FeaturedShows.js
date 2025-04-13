@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
-import CategoryCard from "@/Components/CategoryCard"
-import MovieDescription from "@/Components/MovieDescription"
+import MovieDescription from "@/Components/MovieDescription";
+
 const FeaturedShows = () => {
   const [animes, setAnimes] = useState([]);
 
@@ -20,18 +20,22 @@ const FeaturedShows = () => {
   }, []);
 
   return (
-    <section className="p-4">
-      <h2 className="text-white text-lg font-bold">Featured Shows</h2>
-      <div className="grid grid-cols-5 md:grid-cols-5 gap-4 mt-2">
-        {animes.length > 0 ? (
-          animes.map((anime) => (
-            <MovieDescription key={anime.AnimeID} anime={anime} />
-            // <CategoryCard key={anime.animeid} title={anime.title} image={anime.coverimage} link={`/anime/${anime.animeid}`} />
-          ))
-        ) : (
-          <p className="text-gray-400">Loading...</p>
-        )}
-      </div>
+    <section className="p-6 sm:p-8">
+      <h2 className="text-2xl font-semibold text-orange-400 border-l-4 border-orange-500 pl-4 mb-6">
+        Featured Shows
+      </h2>
+
+      {animes.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {animes.map((anime) => (
+            <MovieDescription key={anime.animeid} anime={anime} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-gray-400 animate-pulse">
+          Loading Featured Shows...
+        </div>
+      )}
     </section>
   );
 };

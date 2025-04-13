@@ -8,7 +8,7 @@ export default async function Main() {
   return (
     <div className="bg-black min-h-screen text-white">
       <Navbar />
-      <SearchBar />
+      
       <CategoryMovies />
     </div>
   );
