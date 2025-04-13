@@ -19,6 +19,7 @@ CREATE TABLE Animes (
 );
 
 -- Table: Users
+-- Table: Users
 CREATE TABLE Users (
     UserID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     UserName VARCHAR(255) NOT NULL,
@@ -28,8 +29,9 @@ CREATE TABLE Users (
     ProfilePicture VARCHAR(255),
     JoinDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     LastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Role VARCHAR(255) NOT NULL
+    Role VARCHAR(255) NOT NULL DEFAULT 'user'
 );
+
 
 -- Table: Admins
 CREATE TABLE Admins (
