@@ -4,76 +4,91 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-    const [user, setUser] = React.useState({
-        username: "",
-        
-        password: "",
-    });
-    const [error, setError] = React.useState("");
-    const router = useRouter();
+  const [user, setUser] = React.useState({
+    username: "",
+    password: "",
+  });
+  const [error, setError] = React.useState("");
+  const router = useRouter();
 
-    const onLogin = async () => {
-        setError(""); // Reset error before request
+  const onLogin = async () => {
+    setError(""); // Reset error before request
 
-        try {
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username:user.username.toLowerCase(),
-                    password: user.password,
-                }),
-            });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user.username.toLowerCase(),
+          password: user.password,
+        }),
+      });
 
-            const data = await response.json();
-            if (!response.ok) {
-                setError(data.error || "Login failed");
-                return;
-            }
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error || "Login failed");
+        return;
+      }
 
-            // Store token in local storage
-            localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token);
+      router.push("/");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    }
+  };
 
-            // Redirect to home/dashboard
-            router.push("/");
-        } catch (err) {
-            setError("Something went wrong. Please try again.");
-        }
-    };
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage:
+          "url('https://img.freepik.com/free-photo/japan-background-digital-art_23-2151546139.jpg?t=st=1744560542~exp=1744564142~hmac=2471fb0ac129ca5b815cbf3237d6606ac0a6804bd47e985fb72e1a8e7e43a168&w=1800')", // Replace with your favorite anime image URL
+      }}
+    >
+      <div className="bg-black/60 backdrop-blur-md rounded-3xl p-10 w-full max-w-md shadow-xl border border-gray-600">
+        <h1 className="text-3xl font-bold text-white text-center mb-6">
+          Welcome to <span className="text-pink-500">AniVerse</span>!
+        </h1>
 
-    return (
-        <div className="flex justify-center items-center min-h-screen bg-black">
-            <div className="flex flex-col bg-gray-800 p-10 rounded-2xl shadow-lg w-96 text-white">
-                <h1 className="text-center text-2xl font-semibold mb-6">Login</h1>
+        {error && (
+          <div className="bg-red-500/20 text-red-300 text-sm p-3 mb-4 rounded-lg text-center">
+            {error}
+          </div>
+        )}
 
-                {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+        <label htmlFor="username" className="block text-sm text-gray-300 mb-1">
+          Username
+        </label>
+        <input
+          id="username"
+          type="text"
+          value={user.username}
+          onChange={(e) => setUser({ ...user, username: e.target.value })}
+          placeholder="Enter your username"
+          className="w-full p-3 mb-4 bg-white/10 text-white rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 border border-gray-500"
+        />
 
-                <label className="text-sm font-medium mb-1" htmlFor="username">Email</label>
-                <input
-                    type="text"
-                    className="mb-4 p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                    id="username"
-                    value={user.username}
-                    onChange={(e) => setUser({ ...user, username: e.target.value })}
-                    placeholder="Enter your username"
-                />
+        <label htmlFor="password" className="block text-sm text-gray-300 mb-1">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          placeholder="Enter your password"
+          className="w-full p-3 mb-6 bg-white/10 text-white rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 border border-gray-500"
+        />
 
-                <label className="text-sm font-medium mb-1" htmlFor="password">Password</label>
-                <input
-                    type="password"
-                    className="mb-4 p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-                    id="password"
-                    value={user.password}
-                    onChange={(e) => setUser({ ...user, password: e.target.value })}
-                    placeholder="Enter your password"
-                />
-
-                <button onClick={onLogin} className="p-3 bg-white text-black rounded-full font-semibold text-lg w-full hover:bg-gray-300 transition mb-4">
-                    Login
-                </button>
-            </div>
-        </div>
-    );
+        <button
+          onClick={onLogin}
+          className="w-full bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white font-semibold py-3 rounded-full transition-transform transform hover:scale-105 shadow-lg"
+        >
+          Login
+        </button>
+      </div>
+    </div>
+  );
 }
