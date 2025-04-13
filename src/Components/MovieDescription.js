@@ -1,7 +1,25 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+
 export default function MovieDescription({ anime }) {
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setRole(decoded.role); // assuming role is part of the token
+      }
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  }, []);
+
   if (!anime) return null;
 
-  // Genre-to-color mapping
   const genreColors = {
     Action: "bg-red-600",
     Adventure: "bg-yellow-600",
@@ -18,7 +36,6 @@ export default function MovieDescription({ anime }) {
     Default: "bg-slate-500",
   };
 
-  // Safely parse genres
   let genres = [];
   try {
     if (typeof anime.genres === "string") {
@@ -45,19 +62,13 @@ export default function MovieDescription({ anime }) {
         {/* Back Side */}
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-black/60 backdrop-blur-md rounded-xl shadow-lg p-4 text-gray-100 flex flex-col justify-between border border-white/10">
           <div>
-            <h2 className="text-lg font-bold mb-2 text-center">
-              {anime.title}
-            </h2>
-            <p className="text-sm mb-2 line-clamp-4 text-center">
-              {anime.description}
-            </p>
+            <h2 className="text-lg font-bold mb-2 text-center">{anime.title}</h2>
+            <p className="text-sm mb-2 line-clamp-4 text-center">{anime.description}</p>
 
-            {/* Genre Badges */}
             {genres.length > 0 && (
               <div className="flex flex-wrap justify-center gap-2 my-3">
                 {genres.map((genre) => {
-                  const colorClass =
-                    genreColors[genre.name] || genreColors.Default;
+                  const colorClass = genreColors[genre.name] || genreColors.Default;
                   return (
                     <span
                       key={genre.id}
@@ -71,32 +82,70 @@ export default function MovieDescription({ anime }) {
             )}
           </div>
 
-          {/* Anime Info */}
           <div className="text-sm text-gray-300 space-y-1 mb-3 text-center">
             <p>
               <span className="font-semibold">Studio:</span> {anime.studio}
             </p>
             <p>
-              <span className="font-semibold">Release:</span>{" "}
-              {anime.releasedate}
+              <span className="font-semibold">Release:</span> {anime.releasedate}
             </p>
             <p>
-              <span className="font-semibold">Rating:</span>{" "}
-              {anime.averagerating}/10
+              <span className="font-semibold">Rating:</span> {anime.averagerating}/10
             </p>
           </div>
 
-          {/* Watch Button */}
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-2">
             <a
               href={`/anime/${anime.animeid}/reviews`}
               className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300"
             >
               ▶ Watch
             </a>
+
+            {/* Only show if role is admin */}
+            {role === "admin" && (
+              <>
+                <a
+                  href={`/anime/${anime.animeid}/edit`}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300"
+                >
+                  ✏️ Edit
+                </a>
+                <button
+                  onClick={() => handleDelete(anime.animeid)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300"
+                >
+                  🗑 Delete
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function handleDelete(animeId) {
+  if (confirm("Are you sure you want to delete this anime?")) {
+    fetch(`/api/anime/${animeId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          alert("Anime deleted.");
+          location.reload();
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.error || "Failed to delete anime.");
+          });
+        }
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  }
 }
