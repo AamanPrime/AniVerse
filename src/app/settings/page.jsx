@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import Navbar from "@/Components/Navbar";
 
 export default function UserSettingsPage() {
   const router = useRouter();
@@ -87,62 +88,70 @@ export default function UserSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-gray-950 rounded-3xl shadow-2xl grid md:grid-cols-2 gap-10 p-10">
-        
-        {/* Profile Preview */}
-        <div className="flex flex-col items-center text-center animate-fade-in">
-          <img
-            src={user.profilePic}
-            alt="Profile"
-            className="w-36 h-36 rounded-full border-4 border-red-500 shadow-lg object-cover mb-5 hover:scale-105 transition-transform"
-          />
-          <h2 className="text-3xl font-bold text-red-400">{user.username}</h2>
-          <p className="text-gray-400 text-sm mt-1">{user.email}</p>
-          <div className="mt-4 px-4">
-            <p className="text-gray-300 italic">{user.bio || "No bio added yet."}</p>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center p-6">
+        <div className="w-full max-w-6xl bg-gray-950 rounded-3xl shadow-2xl grid md:grid-cols-2 gap-10 p-10">
+          {/* Profile Preview */}
+          <div className="flex flex-col items-center text-center animate-fade-in">
+            <img
+              src={user.profilePic}
+              alt="Profile"
+              className="w-36 h-36 rounded-full border-4 border-red-500 shadow-lg object-cover mb-5 hover:scale-105 transition-transform"
+            />
+            <h2 className="text-3xl font-bold text-red-400">{user.username}</h2>
+            <p className="text-gray-400 text-sm mt-1">{user.email}</p>
+            <div className="mt-4 px-4">
+              <p className="text-gray-300 italic">
+                {user.bio || "No bio added yet."}
+              </p>
+            </div>
           </div>
+
+          {/* Settings Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 animate-fade-in delay-100"
+          >
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Update Bio
+              </label>
+              <textarea
+                name="bio"
+                rows={4}
+                value={formData.bio}
+                onChange={handleChange}
+                className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-500"
+                placeholder="Tell us something about yourself..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Profile Picture URL
+              </label>
+              <input
+                type="url"
+                name="profilePic"
+                value={formData.profilePic}
+                onChange={handleChange}
+                className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 focus:ring-2 focus:ring-red-500"
+                placeholder="https://your-image-url.com/avatar.jpg"
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform hover:scale-105"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
-
-        {/* Settings Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 animate-fade-in delay-100"
-        >
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Update Bio</label>
-            <textarea
-              name="bio"
-              rows={4}
-              value={formData.bio}
-              onChange={handleChange}
-              className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-500"
-              placeholder="Tell us something about yourself..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">Profile Picture URL</label>
-            <input
-              type="url"
-              name="profilePic"
-              value={formData.profilePic}
-              onChange={handleChange}
-              className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 focus:ring-2 focus:ring-red-500"
-              placeholder="https://your-image-url.com/avatar.jpg"
-            />
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-transform hover:scale-105"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
+    </>
   );
 }
