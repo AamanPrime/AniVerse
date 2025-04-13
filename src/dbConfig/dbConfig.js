@@ -1,11 +1,14 @@
-import {Pool} from "pg";
+import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: "postgres", // Change to your PostgreSQL username
-  host: "localhost",
-  database: "aniverse", // Change to your database name
-  password: "admin", // Change to your password
-  port: 5432, // Default PostgreSQL port
+  user: 'avnadmin', // PostgreSQL username
+  host: 'aniverse-aamanprime-240b.k.aivencloud.com', // Database host
+  database: 'aniverse', // Database name
+  password: 'AVNS_7tc_u3FRsMvCUFfpNq0', // Password
+  port: 18241, // Port for the database
+  ssl: {
+    rejectUnauthorized: false, // To allow SSL connection when using SSL
+  },
 });
 
 export async function query(text, params) {

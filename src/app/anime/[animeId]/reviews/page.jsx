@@ -298,6 +298,15 @@ const AnimeReviews = () => {
               </div>
             </div>
 
+            <div className="mt-8 flex justify-center">
+             <button
+                className="bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-900 transition"
+                onClick={() => redirect(`/streaming/${animeId}/1/1`)}
+              >
+                🎬 Watch Now
+              </button>
+          </div>
+
             {/* Reviews Section */}
             <div className="mt-12">
               <h2 className="text-3xl font-bold text-orange-300 mb-6">

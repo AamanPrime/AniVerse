@@ -1,7 +1,7 @@
 import { query } from "@/dbConfig/dbConfig";
 
-export async function GET(req, context) {
-  const { params } = context;
+export async function GET(req, {params}) {
+  
   const { animeId } = params;
 
   try {

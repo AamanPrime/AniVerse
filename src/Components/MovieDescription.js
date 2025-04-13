@@ -106,7 +106,7 @@ export default function MovieDescription({ anime }) {
             {role === "admin" && (
               <>
                 <a
-                  href={`/anime/${anime.animeid}/edit`}
+                  href={`/admin/edit/${anime.animeid}`}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300"
                 >
                   ✏️ Edit

@@ -1,9 +1,13 @@
 "use client";
-import { useState } from "react";
 
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Navbar from "@/Components/Navbar";
 
-export default function AddAnimePage() {
+export default function UpdateMovie() {
+  const { animeid } = useParams();
+
   const [formData, setFormData] = useState({
     Title: "",
     ReleaseDate: "",
@@ -19,12 +23,46 @@ export default function AddAnimePage() {
     Genres: "",
   });
 
+  useEffect(() => {
+    if (!animeid) return;
+  
+    const fetchAnime = async () => {
+      try {
+        const res = await fetch(`/api/anime/${animeid}`);
+        const data = await res.json();
+        console.log(data)
+        if (res.ok) {
+          const updatedFormData = {
+            Title: data.title,
+            ReleaseDate: data.releasedate.split("T")[0], // Format for input type="date"
+            Description: data.description,
+            NoOfEpisodes: data.noofepisodes,
+            NoOfSeasons: data.noofseasons,
+            Studio: data.studio,
+            AverageRating: data.averagerating,
+            CoverImage: data.coverimage,
+            // Subtitles: data.subtitles?.join(", "),
+            // Actors: data.actors?.join(", "),
+            // Languages: data.languages?.join(", "),
+            // Genres: data.genres?.join(", "),
+          };
+          setFormData(updatedFormData);
+          console.log("Updated formData:", updatedFormData);
+        } else {
+          console.error("Failed to fetch anime:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching anime:", error);
+      }
+    };
+  
+    fetchAnime();
+  }, [animeid]);
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -35,43 +73,25 @@ export default function AddAnimePage() {
       NoOfEpisodes: parseInt(formData.NoOfEpisodes),
       NoOfSeasons: parseInt(formData.NoOfSeasons),
       AverageRating: parseFloat(formData.AverageRating),
-      Subtitles: formData.Subtitles.split(",").map((s) => s.trim()),
-      Actors: formData.Actors.split(",").map((a) => a.trim()),
-      Languages: formData.Languages.split(",").map((l) => l.trim()),
-      Genres: formData.Genres.split(",").map((g) => g.trim()),
+      // Subtitles: formData.Subtitles.split(",").map((s) => s.trim()),
+      // Actors: formData.Actors.split(",").map((a) => a.trim()),
+      // Languages: formData.Languages.split(",").map((l) => l.trim()),
+      // Genres: formData.Genres.split(",").map((g) => g.trim()),
     };
+    console.log(dataToSend)
 
-    try {
-      const res = await fetch("/api/admin/addmovie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSend),
-      });
+    const res = await fetch(`/api/admin/update/${animeid}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataToSend),
+    });
 
-      if (res.ok) {
-        alert("Anime added successfully!");
-        setFormData({
-          Title: "",
-          ReleaseDate: "",
-          Description: "",
-          NoOfEpisodes: "",
-          NoOfSeasons: "",
-          Studio: "",
-          AverageRating: "",
-          CoverImage: "",
-          Subtitles: "",
-          Actors: "",
-          Languages: "",
-          Genres: "",
-        });
-      } else {
-        alert("Failed to add anime.");
-      }
-    } catch (err) {
-      console.error("Error:", err);
+    if (res.ok) {
+      alert("Anime updated successfully!");
+    } else {
+      alert("Failed to update anime.");
     }
   };
-
   return (
     <>
       <Navbar />
@@ -84,7 +104,7 @@ export default function AddAnimePage() {
       >
         <div className="w-full max-w-5xl bg-black bg-opacity-70 backdrop-blur-lg rounded-3xl shadow-2xl p-10 text-white">
           <h1 className="text-4xl font-extrabold text-center text-red-500 mb-8">
-            Add New Anime
+            Edit Anime
           </h1>
           <form
             onSubmit={handleSubmit}
@@ -108,33 +128,35 @@ export default function AddAnimePage() {
                 step: "1",
               },
               { label: "Cover Image URL", name: "CoverImage" },
-              { label: "Subtitles (comma-separated)", name: "Subtitles" },
-              { label: "Actors (comma-separated)", name: "Actors" },
-              { label: "Languages (comma-separated)", name: "Languages" },
-              { label: "Genres (comma-separated)", name: "Genres" },
+              // { label: "Subtitles (comma-separated)", name: "Subtitles" },
+              // { label: "Actors (comma-separated)", name: "Actors" },
+              // { label: "Languages (comma-separated)", name: "Languages" },
+              // { label: "Genres (comma-separated)", name: "Genres" },
             ].map(({ label, name, type = "text", step }) => (
               <div key={name} className="flex flex-col">
                 <label className="block font-semibold text-gray-300 mb-2">
                   {label}
                 </label>
+                
                 {type === "textarea" ? (
-                  <textarea
-                    name={name}
-                    value={formData[name]}
-                    onChange={handleChange}
-                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-500"
-                    rows={4}
-                  />
-                ) : (
-                  <input
-                    type={type}
-                    name={name}
-                    step={step}
-                    value={formData[name]}
-                    onChange={handleChange}
-                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 focus:ring-2 focus:ring-red-500"
-                  />
-                )}
+  <textarea
+    name={name}
+    value={formData[name]}
+    onChange={handleChange}
+    className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 resize-none focus:ring-2 focus:ring-red-500"
+    rows={4}
+  />
+) : (
+  <input
+    type={type}
+    name={name}
+    step={step}
+    value={formData[name]}
+    onChange={handleChange}
+    className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl p-4 focus:ring-2 focus:ring-red-500"
+  />
+)}
+
               </div>
             ))}
             <div className="md:col-span-2">

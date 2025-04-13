@@ -73,9 +73,9 @@ export default function Main() {
       {/* Content Wrapper */}
       <div className="relative z-10">
         {/* Transparent Navbar */}
-        <div className="bg-black/30 backdrop-blur-md sticky top-0 z-50">
+        
           <Navbar />
-        </div>
+        
 
         {/* Hero Section with Search */}
         <div className="flex flex-col justify-center items-center h-[85vh] text-center px-4 sm:px-6 md:px-10">

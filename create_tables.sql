@@ -128,6 +128,8 @@ CREATE TABLE WatchHistory (
     WatchHistoryID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     UserID UUID NOT NULL,
     AnimeID UUID NOT NULL,
+    Seasonnumber INT NOT NULL,
+    Episodenumber INT NOT NULL,
     Progress INT NOT NULL CHECK (Progress >= 0),
     LastWatchTimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
