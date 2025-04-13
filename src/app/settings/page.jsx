@@ -35,7 +35,7 @@ export default function UserSettingsPage() {
         username: decoded.username,
         email: decoded.email,
         bio: decoded.bio,
-        profilePic: decoded.profilePic || "https://i.pravatar.cc/150?img=8",
+        profilePic: decoded.profilepicture || "https://i.pravatar.cc/150?img=8",
       };
 
       setUser(userInfo);
@@ -75,9 +75,9 @@ export default function UserSettingsPage() {
 
     const data = await res.json();
     if (res.ok) {
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
+      // if (data.token) {
+      //   localStorage.setItem("token", data.token);
+      // }
       alert("Settings updated!");
       window.location.reload();
 

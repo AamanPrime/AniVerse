@@ -11,12 +11,12 @@ export async function POST(req) {
 
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { bio, profilePicture } = await req.json();
-
+    const { bio, profilePic } = await req.json();
+    console.log(profilePic);
     // Update user in DB
     await query(
       `UPDATE Users SET Bio = $1, profilepicture = $2 WHERE Email = $3`,
-      [bio, profilePicture, decoded.email]
+      [bio, profilePic, decoded.email]
     );
 
     return NextResponse.json({ message: "Settings updated........", token: "nadnasjdiadbanak" });
