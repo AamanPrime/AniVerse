@@ -46,8 +46,8 @@ const SearchedMovies = () => {
     
     <div className="text-white">
       <Navbar/>
-      <SearchBar/>
-      <h1 className="text-xl font-bold mb-4">Search Results for: <span className="text-red-500">{moviename}</span></h1>
+      
+      <h1 className="text-xl font-bold mb-4 p-8">Search Results for: <span className="text-red-500">{moviename}</span></h1>
 
       {loading ? (
         <p>Loading...</p>
