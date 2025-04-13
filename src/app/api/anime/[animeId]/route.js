@@ -2,7 +2,7 @@ import { query } from "@/dbConfig/dbConfig";
 
 export async function GET(req, {params}) {
   
-  const { animeId } = params;
+  const { animeId } = await params;
 
   try {
     const result = await query(

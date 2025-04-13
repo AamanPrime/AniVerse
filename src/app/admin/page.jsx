@@ -21,7 +21,7 @@ export default function Main() {
     { label: "Moderate Users", action: () => alert("Moderate Users clicked") },
     {
       label: "View Dashboard Analytics",
-      action: () => alert("Analytics clicked"),
+      action: () => redirect("/admin/dashboard")
     },
   ];
 

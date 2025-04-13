@@ -12,6 +12,7 @@ const AnimeReviews = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mostLikedEpisode, setMostLikedEpisode] = useState(null); // New state for most liked episode
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -60,11 +61,18 @@ const AnimeReviews = () => {
         console.log("Anime details fetched:", animeData);
         setAnime(animeData);
 
-        console.log("Fetching reviews...");
-        const reviewsRes = await fetch(`/api/anime/${animeId}/reviews`);
-        const reviewsData = await reviewsRes.json();
-        console.log("Reviews fetched:", reviewsData);
-        setReviews(reviewsData);
+        // console.log("Fetching reviews...");
+        // const reviewsRes = await fetch(`/api/anime/${animeId}/reviews`);
+        // const reviewsData = await reviewsRes.json();
+        // console.log("Reviews fetched:", reviewsData);
+        // setReviews(reviewsData);
+
+        // Fetch most liked episode details
+        console.log("Fetching most liked episode...");
+        const episodeRes = await fetch(`/api/anime/${animeId}/mostlikedepisode`);
+        const episodeData = await episodeRes.json();
+        console.log("Most liked episode fetched:", episodeData);
+        setMostLikedEpisode(episodeData);
       } catch (error) {
         console.error("Error fetching anime details or reviews:", error);
       }
@@ -106,107 +114,6 @@ const AnimeReviews = () => {
       )
       .join(", ");
   };
-
-  // return (
-  //   <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-  //     <Navbar />
-  
-  //     {anime ? (
-  //       <div className="max-w-5xl mx-auto p-6">
-  //         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-  //           <img
-  //             src={anime.coverimage}
-  //             alt={anime.title}
-  //             className="w-64 h-96 object-cover rounded-lg shadow-lg"
-  //           />
-  //           <div className="flex-1">
-  //             <h1 className="text-4xl font-bold mb-4 text-red-500">{anime.title}</h1>
-  //             <p className="text-gray-300 mb-4">{anime.description}</p>
-  //             <ul className="text-gray-400 space-y-2">
-  //               <li><strong>Release Date:</strong> {anime.releasedate}</li>
-  //               <li><strong>Number of Episodes:</strong> {anime.noofepisodes}</li>
-  //               <li><strong>Number of Seasons:</strong> {anime.noofseasons}</li>
-  //               <li><strong>Studio:</strong> {anime.studio}</li>
-  //               <li><strong>Average Rating:</strong> {anime.averagerating}/10</li>
-  //             </ul>
-  //           </div>
-  //         </div>
-  //         <div className="mt-8 flex justify-center">
-  //           <button
-  //               className="bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-900 transition"
-  //               onClick={() => redirect(`/streaming/${animeId}/1/1`)}
-  //             >
-  //               🎬 Watch Now
-  //             </button>
-  //         </div>
-  
-  //         <div className="mt-10">
-  //           <h2 className="text-2xl font-bold mb-4 text-red-500">Reviews</h2>
-  //           {reviews.length > 0 ? (
-  //             <ul className="space-y-4">
-  //               {reviews.map((review) => (
-  //                 <li key={review.reviewId} className="bg-gray-800 p-4 rounded-lg shadow-md">
-  //                   <p className="text-sm text-gray-300">{review.reviewText}</p>
-  //                   <p className="text-sm text-gray-400 mt-2">Rating: {review.rating}/10</p>
-  //                   {/* <p className="text-sm text-gray-400 mt-2">Rating: {review.rating}/10</p> */}
-
-  //                 </li>
-  //               ))}
-  //             </ul>
-  //           ) : (
-  //             <p className="text-gray-400">No reviews yet. Be the first to review!</p>
-  //           )}
-  //         </div>
-  
-  //         {isAuthenticated ? (
-  //           <div className="mt-10">
-  //             <h3 className="text-xl font-bold mb-4 text-red-500">Add Your Review</h3>
-  //             <textarea
-  //               className="w-full p-3 rounded-lg bg-gray-800 text-white mb-4 shadow-md"
-  //               placeholder="Write your review..."
-  //               value={newReview}
-  //               onChange={(e) => setNewReview(e.target.value)}
-  //             />
-  //             <div className="flex items-center gap-4">
-  //               <input
-  //                 type="range"
-  //                 min="0"
-  //                 max="10"
-  //                 step="1"
-  //                 className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
-  //                   rating <= 3
-  //                     ? 'bg-red-500'
-  //                     : rating <= 7
-  //                     ? 'bg-yellow-500'
-  //                     : 'bg-green-500'
-  //                 }`}
-  //                 value={rating}
-  //                 onChange={(e) => setRating(Number(e.target.value))}
-  //               />
-  //               <span className={`font-bold text-lg ${
-  //                 rating <= 3
-  //                   ? 'text-red-500'
-  //                   : rating <= 7
-  //                   ? 'text-yellow-500'
-  //                   : 'text-green-500'
-  //               }`}>{rating}</span>
-  //             </div>
-  //             <button
-  //               onClick={handleReviewSubmit}
-  //               className="bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-700 transition"
-  //             >
-  //               Submit Review
-  //             </button>
-  //           </div>
-  //         ) : (
-  //           <div className="mt-6 text-center text-red-400">You must be signed in to leave a review.</div>
-  //         )}
-  //       </div>
-  //     ) : (
-  //       <p className="text-center text-gray-400">Loading anime details...</p>
-  //     )}
-  //   </div>
-  // );
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
@@ -299,13 +206,37 @@ const AnimeReviews = () => {
             </div>
 
             <div className="mt-8 flex justify-center">
-             <button
+              <button
                 className="bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-900 transition"
                 onClick={() => redirect(`/streaming/${animeId}/1/1`)}
               >
                 🎬 Watch Now
               </button>
-          </div>
+            </div>
+
+            {/* Most Liked Episode Section */}
+            {mostLikedEpisode && (
+              <div className="mt-12 bg-gray-800/90 p-6 rounded-lg shadow-lg">
+                <h3 className="text-2xl font-semibold text-orange-300 mb-4">
+                  Most Liked Episode
+                </h3>
+                <div className="space-y-2">
+                  <p className="text-lg text-gray-200">
+                    <strong>Episode Number:</strong> {mostLikedEpisode.episodenumber}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    <strong>Likes:</strong> {mostLikedEpisode.nooflikes}
+                  </p>
+
+                  <button
+                    className="text-orange-500 hover:text-orange-700 transition-all mt-2"
+                    onClick={() => redirect(`/streaming/${animeId}/1/${mostLikedEpisode.episodenumber}`)}
+                  >
+                    🎬 Watch Episode
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Reviews Section */}
             <div className="mt-12">
@@ -390,7 +321,6 @@ const AnimeReviews = () => {
       </div>
     </div>
   );
-  
 };
 
 export default AnimeReviews;

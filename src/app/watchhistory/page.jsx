@@ -72,7 +72,10 @@ export default function Main() {
               />
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-1">{anime.title}</h2>
-                <p className="text-sm text-gray-400 line-clamp-2">{anime.description}</p>
+                {/* <p className="text-sm text-gray-400 line-clamp-2">{anime.description}</p> */}
+
+                <p className="text-sm text-gray-400 line-clamp-2">Season Number: {anime.seasonnumber}</p>
+                <p className="text-sm text-gray-400 line-clamp-2">Episode Number: {anime.episodenumber}</p>
                 <p className="text-xs text-orange-400 mt-2">
                   Watched on: {new Date(anime.lastwatchtimestamp).toLocaleDateString()}
                 </p>

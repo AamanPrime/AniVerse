@@ -133,6 +133,9 @@ CREATE TABLE WatchHistory (
     Progress INT NOT NULL CHECK (Progress >= 0),
     LastWatchTimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
-    FOREIGN KEY (AnimeID) REFERENCES Animes(AnimeID) ON DELETE CASCADE
+    FOREIGN KEY (AnimeID) REFERENCES Animes(AnimeID) ON DELETE CASCADE,
+    CONSTRAINT unique_user_anime_episode UNIQUE (AnimeID, UserID, Seasonnumber, Episodenumber)
 );
+
+
 

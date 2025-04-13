@@ -26,7 +26,7 @@ export async function GET(req) {
   } catch (error) {
     console.error("API error:", error);
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-  }
+  }   
 }
 
 export async function POST(req) {
@@ -44,8 +44,11 @@ export async function POST(req) {
         `
 INSERT INTO WatchHistory (UserID, AnimeID, Progress, Seasonnumber, Episodenumber)
 VALUES ($1, $2, $3, $4, $5)
-ON CONFLICT (UserID, AnimeID)
-DO UPDATE SET Progress = EXCLUDED.Progress, LastWatchTimeStamp = CURRENT_TIMESTAMP;
+ON CONFLICT (AnimeID, UserID, Seasonnumber, Episodenumber)
+DO UPDATE SET
+  Progress = EXCLUDED.Progress,
+  LastWatchTimeStamp = CURRENT_TIMESTAMP;
+
 
         `,
         [userId, animeId, progress,seasonID,episodeID]

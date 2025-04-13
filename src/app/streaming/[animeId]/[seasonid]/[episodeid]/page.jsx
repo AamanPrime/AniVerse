@@ -26,7 +26,8 @@ export default function AnimeStreamingPage() {
         const token = localStorage.getItem("token");
 
         if (token) {
-          
+          console.log(seasonid);
+          console.log(episodeid);
           await fetch("/api/watchhistory", {
             method: "POST",
             headers: {
