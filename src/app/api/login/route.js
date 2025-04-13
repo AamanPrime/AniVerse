@@ -27,7 +27,7 @@ export async function POST(req) {
         await query(updateQuery, [username]);
 
         // Generate JWT Token
-        const token = jwt.sign({ userId: user.userid, username: user.username, role: user.role }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user.userid, username: user.username, role: user.role, email:user.email, profilepicture:user.profilepicture, bio:user.bio }, process.env.JWT_SECRET, {
             expiresIn: "1h",
 
         });
