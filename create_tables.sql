@@ -138,4 +138,29 @@ CREATE TABLE WatchHistory (
 );
 
 
+-- ✅ Lookup by AnimeID in Reviews
+CREATE INDEX idx_reviews_animeid ON Reviews (AnimeID);
 
+-- ✅ Lookup by UserID in Reviews
+CREATE INDEX idx_reviews_userid ON Reviews (UserID);
+
+-- ✅ Lookup for Comments by Anime, Season, and Episode
+CREATE INDEX idx_comments_episode ON Comments (AnimeID, SeasonID, EpisodeID);
+
+-- ✅ Lookup by UserID in Watchlist
+CREATE INDEX idx_watchlist_user ON Watchlist (UserID);
+
+-- ✅ Lookup by AnimeID in Watchlist
+CREATE INDEX idx_watchlist_anime ON Watchlist (AnimeID);
+
+-- ✅ Lookup by User and Anime in WatchHistory (faster sync/progress update)
+CREATE INDEX idx_watchhistory_user_anime ON WatchHistory (UserID, AnimeID);
+
+-- ✅ Lookup by UserID in PremiumSubscription
+CREATE INDEX idx_premium_userid ON PremiumSubscription (UserID);
+
+-- ✅ Lookup by Email for login (Users)
+CREATE INDEX idx_users_email ON Users (Email);
+
+-- ✅ Lookup by Email for Admin login
+CREATE INDEX idx_admins_email ON Admins (Email);

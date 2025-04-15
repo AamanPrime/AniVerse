@@ -2,9 +2,11 @@ import { query } from "@/dbConfig/dbConfig";
 
 export async function GET(req) {
   const url = new URL(req.url);
-  const title = url.pathname.split("/").pop();
-  console.log(title)
+  let title = url.pathname.split("/").pop();
   
+  title = title.replaceAll("%20", " ");
+
+  console.log(title)
   if (!title || title.trim() === "") {
     return Response.json({ error: "Missing title parameter" }, { status: 400 });
   }

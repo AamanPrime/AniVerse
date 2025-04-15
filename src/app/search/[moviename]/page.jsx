@@ -47,7 +47,7 @@ const SearchedMovies = () => {
     <div className="text-white">
       <Navbar/>
       
-      <h1 className="text-xl font-bold mb-4 p-8">Search Results for: <span className="text-red-500">{moviename}</span></h1>
+      <h1 className="text-xl font-bold mb-4 p-8">Search Results for: <span className="text-red-500">{moviename.replaceAll("%20", " ")}</span></h1>
 
       {loading ? (
         <p>Loading...</p>
