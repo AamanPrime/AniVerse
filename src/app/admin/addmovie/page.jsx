@@ -26,6 +26,15 @@ export default function AddAnimePage() {
       [name]: value,
     }));
   };
+  const generateRandomId = () => Math.floor(Math.random() * 100000); // You can tweak range
+
+  const parseGenresWithRandomIds = (input) => {
+    return input.split(",").map((genre) => ({
+      id: generateRandomId(),
+      name: genre.trim(),
+    }));
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +44,10 @@ export default function AddAnimePage() {
       NoOfEpisodes: parseInt(formData.NoOfEpisodes),
       NoOfSeasons: parseInt(formData.NoOfSeasons),
       AverageRating: parseFloat(formData.AverageRating),
-      Subtitles: formData.Subtitles.split(",").map((s) => s.trim()),
-      Actors: formData.Actors.split(",").map((a) => a.trim()),
-      Languages: formData.Languages.split(",").map((l) => l.trim()),
-      Genres: formData.Genres.split(",").map((g) => g.trim()),
+      Subtitles: parseGenresWithRandomIds(formData.Subtitles),
+      Actors: parseGenresWithRandomIds(formData.Actors),
+      Languages: parseGenresWithRandomIds(formData.Languages),
+      Genres: parseGenresWithRandomIds(formData.Genres),
     };
 
     try {

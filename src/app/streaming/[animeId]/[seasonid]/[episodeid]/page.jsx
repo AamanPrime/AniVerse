@@ -4,16 +4,43 @@ import { useState, useEffect } from "react";
 import { redirect, useParams } from "next/navigation";
 import Navbar from "@/Components/Navbar";
 
+import {jwtDecode} from "jwt-decode";
+
+export function getUserFromToken(token) {
+  try {
+    const decoded = jwtDecode(token);
+    return { userId: decoded.userId, email: decoded.email ,role: decoded.role}; // adjust fields based on your token structure
+  } catch (err) {
+    console.error("JWT Decode Error:", err);
+    return null;
+  }
+}
+
 export default function AnimeStreamingPage() {
   const { animeId, seasonid, episodeid } = useParams();
 
   const [anime, setAnime] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState({});
   const [newComment, setNewComment] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [inWatchlist, setInWatchlist] = useState(false);
+
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setRole(decoded.role); // assuming role is part of the token
+      }
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  }, []);
+
 
   useEffect(() => {
     const fetchAnime = async () => {
@@ -22,6 +49,11 @@ export default function AnimeStreamingPage() {
         const res = await fetch(`/api/anime/${animeId}`);
         const data = await res.json();
         setAnime(data);
+        
+        const gotComments = await fetch(`/api/addcomment/${animeId}/${seasonid}/${episodeid}`);
+        const commentData = await gotComments.json();
+        console.log(commentData)
+        setComments(commentData);
 
         const token = localStorage.getItem("token");
 
@@ -41,6 +73,8 @@ export default function AnimeStreamingPage() {
               episodeID: episodeid,
             }),
           });
+
+
         }
       } catch (err) {
         console.error("Error:", err);
@@ -52,20 +86,34 @@ export default function AnimeStreamingPage() {
     fetchAnime();
   }, [animeId, seasonid, episodeid]);
 
-  const handlePostComment = () => {
-    if (!newComment.trim()) return;
+const handlePostComment = async () => {
+  if (!newComment.trim()) return;
 
-    setComments([
-      {
-        id: Date.now(),
-        text: newComment,
-        user: "You",
-        time: "Just now",
+  const token = localStorage.getItem("token");
+  if (!token) return alert("You must be logged in to comment.");
+
+  try {
+    const res = await fetch(`/api/addcomment/${animeId}/${seasonid}/${episodeid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      ...comments,
-    ]);
-    setNewComment("");
-  };
+      body: JSON.stringify({ commentText: newComment }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Failed to post comment");
+    const gotComments = await fetch(`/api/addcomment/${animeId}/${seasonid}/${episodeid}`);
+    const commentData = await gotComments.json();
+    console.log(commentData)
+    setComments(commentData);
+  } catch (err) {
+    console.error("Comment Error:", err);
+    alert("Failed to post comment.");
+  }
+};
 
   const handleLike = () => {
     setLiked(!liked);
@@ -180,19 +228,72 @@ export default function AnimeStreamingPage() {
                 </button>
 
                 {/* Comments List */}
-                {comments.length > 0 ? (
+                {comments?.length > 0 ? (
                   comments.map((comment) => (
-                    <div key={comment.id} className="flex gap-4 items-start bg-gray-800 p-4 rounded-lg">
-                      <div className="w-[40px] h-[40px] bg-gray-700 rounded-full"></div>
-                      <div>
-                        <p className="text-sm text-white">{comment.text}</p>
-                        <span className="text-xs text-gray-400">{comment.time}</span>
+                    <div
+                      key={comment.commentid}
+                      className="flex gap-4 items-start bg-[#1f1f1f] p-4 rounded-2xl shadow-md border border-gray-700 hover:shadow-lg transition"
+                    >
+                      {/* Avatar */}
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+                        {comment.username.charAt(0).toUpperCase()}
+                      </div>
+
+                      {/* Comment */}
+                      <div className="flex flex-col gap-1 w-full">
+                        <div className="flex justify-between items-center text-gray-400 text-xs">
+                          <span>{comment.timestamp.split("T")[0]}</span>
+                          <span>{comment.timestamp.split("T")[1].split(".")[0]}</span>
+                        </div>
+
+                        <p className="text-white text-sm leading-relaxed">
+                          {comment.commenttext}
+                        </p>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400 text-xs italic">
+                            — {comment.username}
+                          </span>
+
+                          {role === "admin" && (
+                            <button
+                              onClick={async () => {
+                                const token = localStorage.getItem("token");
+                                try {
+                                  const res = await fetch(
+                                    `/api/addcomment/${animeId}/${seasonid}/${episodeid}/${comment.commentid}`,
+                                    {
+                                      method: "DELETE",
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  );
+                                  const data = await res.json();
+                                  if (!res.ok) throw new Error(data.error || "Failed to delete comment");
+
+                                  // Refresh comments
+                                  const gotComments = await fetch(`/api/addcomment/${animeId}/${seasonid}/${episodeid}`);
+                                  const commentData = await gotComments.json();
+                                  setComments(commentData);
+                                } catch (err) {
+                                  console.error("Delete error:", err);
+                                  alert("Failed to delete comment.");
+                                }
+                              }}
+                              className="text-xs text-red-400 hover:text-red-600 underline ml-4"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
                 ) : (
                   <p className="text-gray-500">No comments yet. Be the first to comment!</p>
                 )}
+
               </div>
             </section>
           </div>
@@ -205,17 +306,18 @@ export default function AnimeStreamingPage() {
               {isLoading ? (
                 <p className="text-gray-500">Loading episodes...</p>
               ) : (
-                [...Array(anime?.noofepisodes || 0)].map((_, i) => (
-                  <button
-                    key={i}
-                    className="w-full bg-gray-800 p-4 rounded-lg hover:bg-red-600 transition mb-2 flex items-center justify-between"
-                    onClick={() => redirect(`/streaming/${animeId}/${seasonid}/${i+1}`)}
-                  >
-                  <span className={`font-bold ${+episodeid === i + 1 ? 'text-red-500' : 'text-white'}`}>
-                    Episode {i + 1}
-                  </span>
-
-                  </button>
+                [...Array(anime?.noofepisodes || 0)]
+                  .slice(0, 3)
+                  .map((_, i) => (
+                    <button
+                      key={i}
+                      className="w-full bg-gray-800 p-4 rounded-lg hover:bg-red-600 transition mb-2 flex items-center justify-between"
+                      onClick={() => redirect(`/streaming/${animeId}/${seasonid}/${i + 1}`)}
+                    >
+                      <span className={`font-bold ${+episodeid === i + 1 ? 'text-red-500' : 'text-white'}`}>
+                        Episode {i + 1}
+                      </span>
+                    </button>
                 ))
               )}
             </div>

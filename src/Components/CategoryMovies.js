@@ -15,13 +15,17 @@ export default function CategoryMovies() {
 
   useEffect(() => {
     if (!category) return;
-
+  
     const fetchAnimes = async () => {
       try {
-        const capitalized =
-          category.charAt(0).toUpperCase() + category.slice(1);
-        const res = await fetch(`/api/${capitalized}`);
+        setLoading(true);
+        const capitalized = category.charAt(0).toUpperCase() + category.slice(1);
+        const endpoint =
+          filter === "mostReviewed" ? `/api/${capitalized}/mostReviewed` : `/api/${capitalized}`;
+  
+        const res = await fetch(endpoint);
         const data = await res.json();
+        console.log(data)
         setAnimes(data);
         setFilteredAnimes(data);
       } catch (err) {
@@ -30,9 +34,10 @@ export default function CategoryMovies() {
         setLoading(false);
       }
     };
-
+  
     fetchAnimes();
-  }, [category]);
+  }, [category, filter]);
+  
 
   // Filter and sort whenever dependencies change
   useEffect(() => {

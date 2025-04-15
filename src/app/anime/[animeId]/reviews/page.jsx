@@ -2,6 +2,19 @@
 import { useEffect, useState } from "react";
 import { redirect, useParams } from "next/navigation";
 import Navbar from "@/Components/Navbar";
+import {jwtDecode} from "jwt-decode";
+import { Trash2 } from "lucide-react";
+
+
+export function getUserFromToken(token) {
+  try {
+    const decoded = jwtDecode(token);
+    return { userId: decoded.userId, email: decoded.email ,role: decoded.role}; // adjust fields based on your token structure
+  } catch (err) {
+    console.error("JWT Decode Error:", err);
+    return null;
+  }
+}
 
 const AnimeReviews = () => {
   const { animeId } = useParams();
@@ -13,6 +26,20 @@ const AnimeReviews = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mostLikedEpisode, setMostLikedEpisode] = useState(null); // New state for most liked episode
+  const [role, setRole] = useState("");
+  
+
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setRole(decoded.role); // assuming role is part of the token
+      }
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  }, []);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -61,11 +88,11 @@ const AnimeReviews = () => {
         console.log("Anime details fetched:", animeData);
         setAnime(animeData);
 
-        // console.log("Fetching reviews...");
-        // const reviewsRes = await fetch(`/api/anime/${animeId}/reviews`);
-        // const reviewsData = await reviewsRes.json();
-        // console.log("Reviews fetched:", reviewsData);
-        // setReviews(reviewsData);
+        console.log("Fetching reviews...");
+        const reviewsRes = await fetch(`/api/anime/${animeId}/reviews`);
+        const reviewsData = await reviewsRes.json();
+        console.log("Reviews fetched:", reviewsData);
+        setReviews(reviewsData);
 
         // Fetch most liked episode details
         console.log("Fetching most liked episode...");
@@ -99,7 +126,12 @@ const AnimeReviews = () => {
         setNewReview("");
         setRating(0);
       }
+      else {
+        alert("You must be logged in to post a review.");
+      }
     } catch (error) {
+      
+
       console.error("Error submitting review:", error);
     }
   };
@@ -244,26 +276,64 @@ const AnimeReviews = () => {
                 What fans are saying
               </h2>
               {reviews.length > 0 ? (
-                <div className="space-y-5">
-                  {reviews.map((review) => (
-                    <div
-                      key={review.reviewId}
-                      className="bg-gray-800/90 p-5 rounded-lg shadow-lg border-l-4 border-orange-400"
-                    >
-                      <p className="text-sm text-gray-200">
-                        {review.reviewText}
-                      </p>
-                      <p className="text-xs text-orange-300 mt-2 font-semibold">
-                        Rating: {review.rating}/10
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-400">
-                  No reviews yet. Be the first to share your thoughts!
-                </p>
-              )}
+                  <div className="space-y-5">
+                    {reviews.map((review) => (
+                      <div
+                        key={review.reviewid}
+                        className="bg-gradient-to-br from-gray-800 to-gray-700 p-5 rounded-2xl shadow-md border-l-4 border-orange-400 relative"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-sm text-gray-200 whitespace-pre-wrap">{review.reviewtext}</p>
+                            <p className="text-xs text-orange-300 mt-2 font-semibold">
+                              Rating: <span className="text-white">{review.rating}/10</span>
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1 italic">
+                              By <span className="font-medium text-orange-200">{review.username}</span> •{" "}
+                              {new Date(review.timestamp).toLocaleString()}
+                            </p>
+                          </div>
+                          {role === "admin" && (
+                            <button
+                              className="text-red-500 hover:text-red-700 transition duration-200"
+                              onClick={async () => {
+                                const token = localStorage.getItem("token");
+                                try {
+                                  const res = await fetch(
+                                    `/api/anime/${animeId}/reviews/${review.reviewid}`,
+                                    {
+                                      method: "DELETE",
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  );
+                                  const data = await res.json();
+                                  if (!res.ok) throw new Error(data.error || "Failed to delete comment");
+
+                                  // Refresh comments
+                                  const gotReviews = await fetch(`/api/anime/${animeId}/reviews`);
+                                  const commentData = await gotReviews.json();
+                                  setReviews(commentData);
+                                } catch (err) {
+                                  console.error("Delete error:", err);
+                                  alert("Failed to delete comment.");
+                                }
+                              }}
+                              title="Delete Review"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm text-center mt-4">
+                    No reviews yet. Be the first to share your thoughts!
+                  </p>
+                )}
             </div>
 
             {/* Add Review */}

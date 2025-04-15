@@ -36,16 +36,8 @@ export default function MovieDescription({ anime }) {
     Default: "bg-slate-500",
   };
 
-  let genres = [];
-  try {
-    if (typeof anime.genres === "string") {
-      genres = JSON.parse(anime.genres);
-    } else if (Array.isArray(anime.genres)) {
-      genres = anime.genres;
-    }
-  } catch (error) {
-    console.error("Failed to parse genres:", error);
-  }
+  const genres = Array.isArray(anime.genres) ? anime.genres : [];
+  
 
   return (
     <div className="w-full h-[26rem] [perspective:1000px] group">
@@ -67,17 +59,20 @@ export default function MovieDescription({ anime }) {
 
             {genres.length > 0 && (
               <div className="flex flex-wrap justify-center gap-2 my-3">
-                {genres.map((genre) => {
-                  const colorClass = genreColors[genre.name] || genreColors.Default;
-                  return (
-                    <span
-                      key={genre.id}
-                      className={`text-xs px-3 py-1 rounded-full ${colorClass} text-white shadow font-medium`}
-                    >
-                      {genre.name}
-                    </span>
-                  );
-                })}
+                  {genres.map((genre, idx) => {
+                    const genreName = typeof genre === "string" ? genre : genre?.name;
+                    const colorClass = genreColors[genreName] || genreColors.Default;
+
+                    return (
+                      <span
+                        key={genre?.id || idx}
+                        className={`text-xs px-3 py-1 rounded-full ${colorClass} text-white shadow font-medium`}
+                      >
+                        {genreName}
+                      </span>
+                    );
+                  })}
+
               </div>
             )}
           </div>
