@@ -6,7 +6,7 @@ import Navbar from "@/Components/Navbar";
 
 import {jwtDecode} from "jwt-decode";
 
-export function getUserFromToken(token) {
+function getUserFromToken(token) {
   try {
     const decoded = jwtDecode(token);
     return { userId: decoded.userId, email: decoded.email ,role: decoded.role}; // adjust fields based on your token structure

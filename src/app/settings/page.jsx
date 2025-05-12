@@ -73,7 +73,11 @@ export default function UserSettingsPage() {
     const data = await res.json();
     if (res.ok) {
       alert("Settings updated!");
-      window.location.reload();
+      setUser((prev) => ({
+        ...prev,
+        bio: formData.bio,
+        profilePic: formData.profilePic,
+      }));
     } else {
       alert(data.error || "Failed to update.");
     }

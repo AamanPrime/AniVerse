@@ -2,7 +2,7 @@ import { query } from "@/dbConfig/dbConfig";
 
 import {jwtDecode} from "jwt-decode";
 
-export function getUserFromToken(token) {
+function getUserFromToken(token) {
   try {
     const decoded = jwtDecode(token);
     return { userId: decoded.userId, email: decoded.email }; // adjust fields based on your token structure

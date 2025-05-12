@@ -30,12 +30,8 @@ export async function PUT(req, { params }) {
         NoOfSeasons = $5,
         Studio = $6,
         AverageRating = $7,
-        CoverImage = $8,
-        Subtitles = $9,
-        Actors = $10,
-        Languages = $11,
-        Genres = $12
-      WHERE AnimeID = $13
+        CoverImage = $8
+      WHERE AnimeID = $9
       RETURNING *;
     `;
 
@@ -48,10 +44,6 @@ export async function PUT(req, { params }) {
       Studio,
       AverageRating,
       CoverImage,
-      JSON.stringify(Subtitles),
-      JSON.stringify(Actors),
-      JSON.stringify(Languages),
-      JSON.stringify(Genres),
       animeid,
     ];
 
