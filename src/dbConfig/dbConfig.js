@@ -4,7 +4,7 @@ const pool = new Pool({
   user: 'avnadmin', // PostgreSQL username
   host: 'aniverse-aamanprime-240b.k.aivencloud.com', // Database host
   database: 'aniverse', // Database name
-  password: 'AVNS_7tc_u3FRsMvCUFfpNq0', // Password
+  password: process.env.PG_PASSWORD, // Password
   port: 18241, // Port for the database
   ssl: {
     rejectUnauthorized: false, // To allow SSL connection when using SSL
