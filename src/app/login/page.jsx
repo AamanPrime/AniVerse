@@ -59,7 +59,7 @@ export default function LoginPage() {
         )}
 
         <label htmlFor="username" className="block text-sm text-gray-300 mb-1">
-          Username
+          Email
         </label>
         <input
           id="username"
